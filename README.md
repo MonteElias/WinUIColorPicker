@@ -37,7 +37,8 @@ El control principal con sus tres vistas: Rueda de Color, Paleta y Ajustes.
 
 ![img](https://i.imgur.com/3RVHiWk.gif)
 
-Descripción: Vista principal, Compuesta por una rueda de Color (Win2D), un slider para la Iluminacion y otro slider para el Alpha
+Descripción: Vista principal, Compuesta por una rueda de Color (Win2D). 
+Un slider para la Iluminacion y otro slider para el Alpha
 ![img](https://i.imgur.com/ur6rEqv.png)
 
 Descripción: Vista de paleta mostrando la FluentPalette por defecto. Cada color muestra su nombre en un tooltip.
