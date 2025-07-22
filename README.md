@@ -39,14 +39,17 @@ El control principal con sus tres vistas: Rueda de Color, Paleta y Ajustes.
 
 Descripción: Vista principal, Compuesta por una rueda de Color (Win2D). 
 Un slider para la Iluminacion y otro slider para el Alpha
+
 ![img](https://i.imgur.com/ur6rEqv.png)
 
 Descripción: Vista de paleta mostrando la FluentPalette por defecto. Cada color muestra su nombre en un tooltip.
+
 ![img](https://i.imgur.com/AXwhdqR.png)
 
 Descripción: Vista de ajustes con los sliders para los canales RGBA, el campo de texto para HEX y el selector de modelo de color.
 Botón Selector de Color (ColorPickerButton)
 El control ColorPickerButton mostrando el WinUIColorPicker dentro de un Flyout.
+
 ![img](https://i.imgur.com/NqWTrOu.png)
 
 Descripción: El ColorPickerButton desplegando el selector de color completo al hacer clic.
