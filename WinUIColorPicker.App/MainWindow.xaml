@@ -6,15 +6,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <!-- ========================================================================================= -->
-    <!-- === CORRECCIÓN APLICADA AQUÍ === -->
-    <!-- ========================================================================================= -->
     <!-- Se establece MicaBackdrop como el material de fondo para toda la ventana. -->
     <!-- Este es el lugar correcto para definir los materiales del sistema. -->
     <Window.SystemBackdrop>
         <MicaBackdrop Kind="BaseAlt"/>
     </Window.SystemBackdrop>
-    <!-- ========================================================================================= -->
 
     <!-- El Frame ahora se dibujará sobre el fondo de Mica. -->
     <Frame x:Name="MyFrame"/>
