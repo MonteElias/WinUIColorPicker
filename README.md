@@ -53,7 +53,9 @@ El control ColorPickerButton mostrando el WinUIColorPicker dentro de un Flyout.
 ![img](https://i.imgur.com/NqWTrOu.png)
 
 Descripción: El ColorPickerButton desplegando el selector de color completo al hacer clic.
+
 🚀 Instalación
+
 Puedes instalar esta biblioteca en tu proyecto a través del gestor de paquetes NuGet.
 
 Package Manager Console:
