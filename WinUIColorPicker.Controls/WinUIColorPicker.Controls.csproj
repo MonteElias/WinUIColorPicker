@@ -12,14 +12,14 @@
 	  <PackageId>WinUIColorPicker.Controls</PackageId>
 	  <Version>1.0.0</Version>
 	  <!-- O empieza con 0.1.0-alpha si es una vista previa -->
-	  <Authors>Tu Nombre o Nickname</Authors>
+	  <Authors>Elias</Authors>
 	  <Description>Un conjunto de controles de selector de color modernos, personalizables y de alto rendimiento para WinUI 3, incluyendo una rueda de color, sliders y paletas.</Description>
-	  <PackageTags>winui, winui3, color, color-picker, csharp, dotnet, windows-app-sdk</PackageTags>
+	  <PackageTags>Winui, Winui3, Color, Color-picker, csharp, dotnet, Windows-app-sdk</PackageTags>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <!-- MIT es una licencia muy común y permisiva -->
-	  <PackageProjectUrl>https://github.com/tu-usuario/tu-repositorio</PackageProjectUrl>
+	  <PackageProjectUrl>https://github.com/MonteElias/WinUIColorPicker</PackageProjectUrl>
 	  <!-- URL a tu repo de GitHub -->
-	  <RepositoryUrl>https://github.com/tu-usuario/tu-repositorio.git</RepositoryUrl>
+	  <RepositoryUrl>https://github.com/MonteElias/WinUIColorPicker.git</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <!-- Opcional: <PackageIcon>icon.png</PackageIcon> -->
