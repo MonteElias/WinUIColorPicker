@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Archivo: WinUIColorPicker.Controls/ColorPickerAccent.xaml -->
+<UserControl
+    x:Class="WinUIColorPicker.Controls.ColorPickerAccent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!-- Estilo para los botones internos con animaciones personalizadas -->
+        <Style x:Key="ValueStepperButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="RootGrid"
+                              Background="{TemplateBinding Background}"
+                              CornerRadius="{TemplateBinding CornerRadius}">
+
+                            <ContentPresenter x:Name="ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center">
+                                <ContentPresenter.RenderTransform>
+                                    <ScaleTransform x:Name="ButtonScaleTransform" />
+                                </ContentPresenter.RenderTransform>
+                            </ContentPresenter>
+
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Opacity" To="0.8" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.1"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <!-- Grupo de estados para la animación de selección -->
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="ButtonScaleTransform" Storyboard.TargetProperty="ScaleX" To="1.1" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="ButtonScaleTransform" Storyboard.TargetProperty="ScaleY" To="1.1" Duration="0:0:0.2">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid MinHeight="44">
+
+        <!-- CAPA 1: La rejilla con los botones. Define la estructura básica. -->
+        <Grid x:Name="LayoutGrid"
+              Background="{ThemeResource SubtleFillColorTransparentBrush}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <!-- El botón central es más grande -->
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- CAMBIOS DE ACCESIBILIDAD APLICADOS AQUÍ -->
+            <Button x:Name="ButtonNeg3" Grid.Column="0" Content="-3" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad muy oscura"/>
+            <Button x:Name="ButtonNeg2" Grid.Column="1" Content="-2" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad oscura"/>
+            <Button x:Name="ButtonNeg1" Grid.Column="2" Content="-1" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad ligeramente oscura"/>
+            <Button x:Name="ButtonA" Grid.Column="3" Content="A" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar color de acento base"/>
+            <Button x:Name="ButtonPos1" Grid.Column="4" Content="+1" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad ligeramente clara"/>
+            <Button x:Name="ButtonPos2" Grid.Column="5" Content="+2" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad clara"/>
+            <Button x:Name="ButtonPos3" Grid.Column="6" Content="+3" Style="{StaticResource ValueStepperButtonStyle}" AutomationProperties.Name="Seleccionar tonalidad muy clara"/>
+        </Grid>
+
+        <!-- CAPA 2: Una superposición con esquinas redondeadas que crea la forma de "píldora". -->
+        <Border CornerRadius="8"
+                BorderBrush="{ThemeResource SubtleFillColorTransparentBrush}"
+                BorderThickness="2"
+                IsHitTestVisible="False"/>
+    </Grid>
+</UserControl>

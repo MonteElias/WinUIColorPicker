@@ -1,0 +1,60 @@
+<!-- Archivo: WinUIColorPicker.Controls/ColorPickerButton.xaml -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls">
+
+    <!-- Estilo por defecto para el ColorPickerButton -->
+    <Style TargetType="local:ColorPickerButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ColorPickerButton">
+                    <DropDownButton Padding="0" BorderThickness="0" Background="Transparent">
+
+                        <!-- Contenido visible del botón: El previsualizador de color. -->
+                        <!-- =================================================================================== -->
+                        <!-- === AJUSTE INTERNO APLICADO AQUÍ === -->
+                        <!-- =================================================================================== -->
+                        <!-- Se establece un valor fijo y pequeño (4) para 'CheckerboardSquareSize'. -->
+                        <!-- Esto hace que el tablero de ajedrez se vea bien en el tamaño de un icono, -->
+                        <!-- y como es un valor fijo, no es una propiedad pública del ColorPickerButton. -->
+                        <local:ColorPreviewer 
+                            Width="32" 
+                            Height="32" 
+                            CornerRadius="4"
+                            DisplayColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}"
+                            CheckerboardSquareSize="4" />
+                        <!-- =================================================================================== -->
+
+                        <!-- Contenido desplegable (Flyout) -->
+                        <DropDownButton.Flyout>
+                            <Flyout Placement="Bottom" ShouldConstrainToRootBounds="False">
+                                <Flyout.FlyoutPresenterStyle>
+                                    <Style TargetType="FlyoutPresenter">
+                                        <Setter Property="MinWidth" Value="380"/>
+                                        <Setter Property="MinHeight" Value="450"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="CornerRadius" Value="8"/>
+                                    </Style>
+                                </Flyout.FlyoutPresenterStyle>
+
+                                <!-- Contenido del Flyout: El selector de color principal, 'WinUIColorPicker'. -->
+                                <local:WinUIColorPicker
+                                    DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                    Color="{Binding Path=Color, Mode=TwoWay}" 
+                                    HorizontalAlignment="Stretch"
+                                    IsWheelViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsWheelViewEnabled}"
+                                    IsPaletteViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaletteViewEnabled}"
+                                    IsSettingsViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSettingsViewEnabled}"
+                                    IsWheelAlphaSliderEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsWheelAlphaSliderEnabled}"
+                                    IsSettingsAlphaChannelEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSettingsAlphaChannelEnabled}"
+                                    IsValueSliderEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsValueSliderEnabled}"
+                                    IsAccentBarEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsAccentBarEnabled}"/>
+                            </Flyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

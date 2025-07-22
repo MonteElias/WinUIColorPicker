@@ -1,0 +1,43 @@
+<!-- Archivo: WinUIColorPicker.Controls/ColorPreviewer.xaml -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls">
+
+    <!-- Estilo por defecto para el control local:ColorPreviewer -->
+    <Style TargetType="local:ColorPreviewer">
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ColorPreviewer">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Grid>
+                            <!-- 
+                            =======================================================================
+                            === CAMBIO APLICADO AQUÍ ===
+                            =======================================================================
+                            Se enlaza la propiedad 'SquareSize' del tablero a la nueva propiedad
+                            'CheckerboardSquareSize' que hemos definido en el code-behind del
+                            ColorPreviewer. Esto permite que el tamaño sea dinámico.
+                            -->
+                            <local:CheckerboardBackground 
+                                SquareSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CheckerboardSquareSize}"/>
+                            <!-- ======================================================================= -->
+
+                            <!-- Capa Superior: El color a mostrar -->
+                            <Rectangle>
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,230 @@
+<Page
+    x:Class="WinUIColorPicker.App.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:WinUIColorPicker.Controls"
+    xmlns:local="using:WinUIColorPicker.App"
+    xmlns:converters="using:WinUIColorPicker.Controls.Converters"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="SettingsToggleSwitchStyle" TargetType="ToggleSwitch">
+            <Setter Property="OnContent" Value=""/>
+            <Setter Property="OffContent" Value=""/>
+            <Setter Property="MinWidth" Value="0"/>
+        </Style>
+
+        <Style x:Key="TextRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,6,8,6"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorSecondaryBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SubtleFillColorTertiaryBrush}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Unchecked"/>
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemAccentColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SelectionIndicator" Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <StackPanel>
+                                <ContentPresenter x:Name="ContentPresenter"
+                                                  Content="{TemplateBinding Content}"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                <Rectangle x:Name="SelectionIndicator"
+                                           Fill="{ThemeResource SystemAccentColor}"
+                                           Height="2" RadiusX="1" RadiusY="1"
+                                           Visibility="Collapsed"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto">
+        <Grid MaxWidth="1200" Padding="48,32">
+            <Grid.Resources>
+                <ThemeShadow x:Name="SharedShadow"/>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition FromVerticalOffset="50" IsStaggeringEnabled="True"/>
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
+
+            <TextBlock Grid.Row="0" Text="WinUI Color Picker Showcase" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,24"/>
+
+            <Grid x:Name="HeroSectionGrid" Grid.Row="1" ColumnSpacing="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Spacing="12">
+                    <TextBlock Text="Vista Previa Dinámica" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,4"/>
+                    <Border Height="450" CornerRadius="8" Shadow="{StaticResource SharedShadow}" VerticalAlignment="Top"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1">
+                        <Grid>
+                            <Border CornerRadius="8">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{x:Bind SelectedColor, Mode=OneWay}" />
+                                </Border.Background>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8">
+                                <TextBlock Text="Texto Blanco de Muestra" Foreground="White" FontSize="24" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Texto Negro de Muestra" Foreground="Black" FontSize="24" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <Button Content="Botón con Acento" Style="{ThemeResource AccentButtonStyle}" Margin="0,16,0,0"/>
+                            </StackPanel>
+                            <Border VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="16" Background="#A0000000" CornerRadius="4" Padding="8,4">
+                                <TextBlock Text="{x:Bind MyColorPicker.ColorString, Mode=OneWay, FallbackValue='#FFFFFFFF'}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="White"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="12">
+                    <TextBlock Text="Control en Acción" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,0,0,4"/>
+                    <Border CornerRadius="8" Shadow="{StaticResource SharedShadow}" VerticalAlignment="Top">
+                        <controls:WinUIColorPicker x:Name="MyColorPicker" HorizontalAlignment="Stretch"
+                            Color="{x:Bind SelectedColor, Mode=TwoWay}"
+                            IsWheelViewEnabled="{x:Bind ShowWheelView, Mode=OneWay}"
+                            IsPaletteViewEnabled="{x:Bind ShowPaletteView, Mode=OneWay}"
+                            IsSettingsViewEnabled="{x:Bind ShowSettingsView, Mode=OneWay}"
+                            IsWheelAlphaSliderEnabled="{x:Bind ShowWheelAlphaSlider, Mode=OneWay}"
+                            IsSettingsAlphaChannelEnabled="{x:Bind ShowSettingsAlphaChannel, Mode=OneWay}"
+                            IsValueSliderEnabled="{x:Bind ShowValueSlider, Mode=OneWay}"
+                            IsAccentBarEnabled="{x:Bind ShowAccentBar, Mode=OneWay}"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="2" Margin="0,48,0,0" Spacing="12">
+                <TextBlock Text="Explora y Configura" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                    <StackPanel Padding="24" Spacing="16">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <RadioButton x:Name="ConfigurationToggle" Content="Personalización en Vivo" IsChecked="True" GroupName="ExplorerView" Style="{StaticResource TextRadioButtonStyle}"/>
+                            <RadioButton x:Name="CodeToggle" Content="Ejemplos de Código" GroupName="ExplorerView" Style="{StaticResource TextRadioButtonStyle}"/>
+                        </StackPanel>
+
+                        <Grid x:Name="ConfigurationPanel" Visibility="{x:Bind ConfigurationToggle.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Spacing="8">
+                                <TextBlock Text="Vistas Disponibles" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <ToggleSwitch Header="Vista de Rueda" IsOn="{x:Bind ShowWheelView, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                                <ToggleSwitch Header="Vista de Paleta" IsOn="{x:Bind ShowPaletteView, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                                <ToggleSwitch Header="Vista de Ajustes" IsOn="{x:Bind ShowSettingsView, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="8">
+                                <TextBlock Text="Componentes Visibles" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+                                <ToggleSwitch Header="Slider de Alfa (Rueda)" IsOn="{x:Bind ShowWheelAlphaSlider, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                                <ToggleSwitch Header="Canal Alfa (Ajustes)" IsOn="{x:Bind ShowSettingsAlphaChannel, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                                <ToggleSwitch Header="Slider de Brillo (Valor)" IsOn="{x:Bind ShowValueSlider, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                                <ToggleSwitch Header="Barra de Acentos" IsOn="{x:Bind ShowAccentBar, Mode=TwoWay}" Style="{StaticResource SettingsToggleSwitchStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel x:Name="CodePanel" Spacing="16" Visibility="{x:Bind CodeToggle.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <RadioButton x:Name="GeneralCodeToggle" Content="Control General" IsChecked="True" GroupName="CodeExampleView" Style="{StaticResource TextRadioButtonStyle}"/>
+                                <RadioButton x:Name="DropDownCodeToggle" Content="Botón Desplegable" GroupName="CodeExampleView" Style="{StaticResource TextRadioButtonStyle}"/>
+                                <RadioButton x:Name="ViewModelCodeToggle" Content="C# ViewModel" GroupName="CodeExampleView" Style="{StaticResource TextRadioButtonStyle}"/>
+                            </StackPanel>
+
+                            <local:CodeSample Code="{x:Bind GeneralControlCode, Mode=OneWay}"
+                                              Visibility="{x:Bind GeneralCodeToggle.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                            <local:CodeSample Code="{x:Bind DropDownButtonCode, Mode=OneWay}"
+                                              Visibility="{x:Bind DropDownCodeToggle.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                            <local:CodeSample Code="{x:Bind CSharpViewModelCode, Mode=OneWay}"
+                                              Visibility="{x:Bind ViewModelCodeToggle.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVis}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- =================================================================================== -->
+            <!-- === SECCIÓN DE CASO DE USO ADICIONAL (RESTAURADA) === -->
+            <!-- =================================================================================== -->
+            <StackPanel Grid.Row="3" Margin="0,32,0,0" Spacing="12">
+                <TextBlock Text="Caso de Uso Interactivo" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+                    <StackPanel Padding="24" Spacing="16">
+                        <TextBlock Text="Uso como Botón Desplegable" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+
+                        <InfoBar Severity="Informational" IsOpen="True" IsClosable="False"
+                                 Title="Ideal para layouts compactos" 
+                                 Message="Usa el ColorPickerButton para ahorrar espacio, mostrando el selector completo en un menú flotante (Flyout)."/>
+
+                        <!-- Ejemplo interactivo del Botón Desplegable -->
+                        <Grid Padding="16,12" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="Color de Fondo del Panel" Style="{ThemeResource BaseTextBlockStyle}"/>
+                                <TextBlock Text="Selecciona un color para el fondo de este panel imaginario." Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                            </StackPanel>
+
+                            <!-- Este es el control interactivo -->
+                            <controls:ColorPickerButton Grid.Column="1" 
+                                Color="{x:Bind SelectedColor, Mode=TwoWay}"
+                                IsWheelViewEnabled="{x:Bind ShowWheelView, Mode=OneWay}" IsPaletteViewEnabled="{x:Bind ShowPaletteView, Mode=OneWay}" IsSettingsViewEnabled="{x:Bind ShowSettingsView, Mode=OneWay}"
+                                IsWheelAlphaSliderEnabled="{x:Bind ShowWheelAlphaSlider, Mode=OneWay}" IsSettingsAlphaChannelEnabled="{x:Bind ShowSettingsAlphaChannel, Mode=OneWay}"
+                                IsValueSliderEnabled="{x:Bind ShowValueSlider, Mode=OneWay}" IsAccentBarEnabled="{x:Bind ShowAccentBar, Mode=OneWay}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

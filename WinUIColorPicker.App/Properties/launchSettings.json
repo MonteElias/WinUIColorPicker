@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WinUIColorPicker.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WinUIColorPicker.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

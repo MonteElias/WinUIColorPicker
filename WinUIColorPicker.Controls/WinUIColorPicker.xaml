@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Archivo: WinUIColorPicker.Controls/WinUIColorPicker.xaml
+Propósito: Define la plantilla visual (ControlTemplate) y los estilos asociados
+           para el control principal WinUIColorPicker. Este archivo define la
+           estructura completa y la apariencia del selector de color, incluyendo
+           los enlaces de datos para la visibilidad dinámica de sus componentes.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls"
+    xmlns:converters="using:WinUIColorPicker.Controls.Converters">
+
+    <!--
+    ============================================================================================
+    SECCIÓN: Conversores de Datos
+    
+    Clases de ayuda que permiten transformar datos de un tipo a otro dentro de los enlaces de XAML.
+    ============================================================================================
+    -->
+    <converters:HsvValueConverter x:Key="HsvValueConverter" />
+    <converters:ColorToCheckerboardVisibilityConverter x:Key="ColorToCheckerboardVisibilityConverter" />
+    <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+
+    <!--
+    ============================================================================================
+    SECCIÓN: Estilo Principal del WinUIColorPicker
+    
+    Estilo por defecto que se aplicará a todas las instancias de 'WinUIColorPicker',
+    definiendo su plantilla visual a través de una ControlTemplate.
+    ============================================================================================
+    -->
+    <Style TargetType="local:WinUIColorPicker">
+        <Setter Property="Width" Value="0" />
+        <Setter Property="MinWidth" Value="380" />
+        <Setter Property="MinHeight" Value="450" />
+        <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:WinUIColorPicker">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <!-- Fila 0: Navegación -->
+                                <RowDefinition Height="*" />
+                                <!-- Fila 1: Contenido principal -->
+                                <RowDefinition Height="Auto" />
+                                <!-- Fila 2: Barra de acentos -->
+                            </Grid.RowDefinitions>
+
+                            <!-- ============================ Fila 0: Barra de Navegación Superior ============================ -->
+                            <local:SegmentedNavigationView x:Name="NavigationBar" Grid.Row="0"
+                                IsWheelViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsWheelViewEnabled}"
+                                IsPaletteViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaletteViewEnabled}"
+                                IsSettingsViewEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSettingsViewEnabled}"/>
+
+                            <!-- ============================ Fila 1: Contenido Principal (Vistas) ============================ -->
+                            <Grid Grid.Row="1">
+                                <!-- Vista de Rueda de Color -->
+                                <Grid x:Name="WheelViewContainer" Visibility="Visible" Padding="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="32"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <local:ColorPickerSlider x:Name="ValueSlider" Channel="Value" Orientation="Vertical" Grid.Column="0" Margin="0,0,12,0"
+                                                             Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsValueSliderEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                             CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Value, Mode=TwoWay}" />
+
+                                    <local:ColorWheel x:Name="ColorWheel" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+                                                      Hue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Hue, Mode=TwoWay}" 
+                                                      Saturation="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Saturation, Mode=TwoWay}" />
+
+                                    <local:ColorPickerSlider x:Name="AlphaSlider" Channel="Alpha" Orientation="Vertical" Grid.Column="2" Margin="12,0,0,0"
+                                                             Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsWheelAlphaSliderEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                             CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Alpha, Mode=TwoWay}" />
+                                </Grid>
+
+                                <!-- Vista de Paleta -->
+                                <GridView x:Name="PaletteViewContainer" Visibility="Collapsed" Margin="12" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=InternalPalette}" IsItemClickEnabled="True" SelectionMode="Single" HorizontalAlignment="Center">
+                                    <GridView.ItemTemplate>
+                                        <DataTemplate>
+                                            <local:ColorPreviewer Width="40" Height="40" CornerRadius="4" DisplayColor="{Binding Color}" ToolTipService.ToolTip="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </GridView.ItemTemplate>
+                                    <GridView.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <ItemsWrapGrid Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </GridView.ItemsPanel>
+                                </GridView>
+
+                                <!-- Vista de Ajustes (Sliders Detallados) -->
+                                <ScrollViewer x:Name="SettingsViewContainer" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                                    <StackPanel Padding="12" Spacing="16">
+                                        <Grid ColumnSpacing="8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ComboBox x:Name="ColorModelComboBox" Grid.Column="0" SelectedIndex="0" HorizontalAlignment="Stretch">
+                                                <x:String>RGB</x:String>
+                                                <x:String>HSV</x:String>
+                                            </ComboBox>
+                                            <Border Grid.Column="1" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" Text="#" VerticalAlignment="Center" Margin="12,0,8,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                    <TextBox x:Name="ColorStringTextBox" Grid.Column="1" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ColorString, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="0,7"/>
+                                                </Grid>
+                                            </Border>
+                                            <Button x:Name="CopyHexButton" Grid.Column="2" Style="{ThemeResource AccentButtonStyle}" Padding="8,4" MinWidth="0">
+                                                <FontIcon x:Name="CopyButtonIcon" Glyph=""/>
+                                                <!-- CAMBIO: Definimos un objeto ToolTip completo con nombre -->
+                                                <ToolTipService.ToolTip>
+                                                    <ToolTip x:Name="CopyToolTip" Content="Copiar HEX"/>
+                                                </ToolTipService.ToolTip>
+                                            </Button>
+                                        </Grid>
+                                        <StackPanel x:Name="RgbaPanel" Spacing="8">
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="R" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <NumberBox Grid.Column="1" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Red, Mode=TwoWay}" BorderThickness="0" Background="Transparent" SpinButtonPlacementMode="Hidden" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Red" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Red, Mode=TwoWay}"/>
+                                            </Grid>
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="G" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <NumberBox Grid.Column="1" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Green, Mode=TwoWay}" BorderThickness="0" Background="Transparent" SpinButtonPlacementMode="Hidden" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Green" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Green, Mode=TwoWay}"/>
+                                            </Grid>
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="B" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <NumberBox Grid.Column="1" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Blue, Mode=TwoWay}" BorderThickness="0" Background="Transparent" SpinButtonPlacementMode="Hidden" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Blue" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Blue, Mode=TwoWay}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <StackPanel x:Name="HsvaPanel" Spacing="8" Visibility="Collapsed">
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="H" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Hue, Mode=TwoWay, Converter={StaticResource HsvValueConverter}, ConverterParameter='H', UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Hue" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Hue, Mode=TwoWay}"/>
+                                            </Grid>
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="S" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Saturation, Mode=TwoWay, Converter={StaticResource HsvValueConverter}, ConverterParameter='S', UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Saturation" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Saturation, Mode=TwoWay}"/>
+                                            </Grid>
+                                            <Grid ColumnSpacing="8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="130"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                    <Grid ColumnDefinitions="Auto,*">
+                                                        <TextBlock Grid.Column="0" Text="V" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Value, Mode=TwoWay, Converter={StaticResource HsvValueConverter}, ConverterParameter='V', UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" Background="Transparent" VerticalAlignment="Center" Padding="0,7"/>
+                                                    </Grid>
+                                                </Border>
+                                                <local:ColorPickerSlider Grid.Column="1" Channel="Value" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Value, Mode=TwoWay}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        <!-- Fila del Canal Alfa/Transparencia en la vista de Ajustes -->
+                                        <Grid ColumnSpacing="8" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsSettingsAlphaChannelEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Background="{ThemeResource TextControlBackground}" BorderBrush="{ThemeResource TextControlBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Grid.Column="0" Text="A" Width="24" TextAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                                    <NumberBox Grid.Column="1" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AlphaByte, Mode=TwoWay}" BorderThickness="0" Background="Transparent" SpinButtonPlacementMode="Hidden" VerticalAlignment="Center" Padding="0,7"/>
+                                                </Grid>
+                                            </Border>
+                                            <local:ColorPickerSlider Grid.Column="1" Channel="Alpha" CurrentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Alpha, Mode=TwoWay}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+
+                            <!-- ============================ Fila 2: Barra de Acentos Inferior ============================ -->
+                            <Grid Grid.Row="2" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsAccentBarEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <local:CheckerboardBackground SquareSize="4" CornerRadius="4" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color, Converter={StaticResource ColorToCheckerboardVisibilityConverter}}"/>
+                                <local:ColorPickerAccent x:Name="AccentBar" HorizontalAlignment="Stretch" Margin="0" AccentColor="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Color}"/>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

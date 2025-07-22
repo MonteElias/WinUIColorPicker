@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinUIColorPicker.App", "WinUIColorPicker.App\WinUIColorPicker.App.csproj", "{78ABA526-E83D-45D2-97E3-C78C5007A1CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinUIColorPicker.Controls", "WinUIColorPicker.Controls\WinUIColorPicker.Controls.csproj", "{122A9207-C982-4207-80DD-0E426FA6A7F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|ARM64.ActiveCfg = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|ARM64.Build.0 = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|ARM64.Deploy.0 = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x64.ActiveCfg = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x64.Build.0 = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x64.Deploy.0 = Debug|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x86.ActiveCfg = Debug|x86
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x86.Build.0 = Debug|x86
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Debug|x86.Deploy.0 = Debug|x86
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|ARM64.ActiveCfg = Release|ARM64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|ARM64.Build.0 = Release|ARM64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|ARM64.Deploy.0 = Release|ARM64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x64.ActiveCfg = Release|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x64.Build.0 = Release|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x64.Deploy.0 = Release|x64
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x86.ActiveCfg = Release|x86
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x86.Build.0 = Release|x86
+		{78ABA526-E83D-45D2-97E3-C78C5007A1CC}.Release|x86.Deploy.0 = Release|x86
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|ARM64.ActiveCfg = Debug|x64
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|ARM64.Build.0 = Debug|x64
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|x64.ActiveCfg = Debug|x64
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|x64.Build.0 = Debug|x64
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Debug|x86.Build.0 = Debug|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|ARM64.Build.0 = Release|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|x64.ActiveCfg = Release|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|x64.Build.0 = Release|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|x86.ActiveCfg = Release|Any CPU
+		{122A9207-C982-4207-80DD-0E426FA6A7F9}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {59F108D9-DF49-4D66-9409-E0CE4B96A89A}
+	EndGlobalSection
+EndGlobal

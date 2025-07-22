@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+Archivo: WinUIColorPicker.Controls/ColorPickerSlider.xaml
+Propósito: Define la apariencia visual completa (el estilo y la plantilla) para el
+           control personalizado 'ColorPickerSlider'.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls">
+
+    <!--
+    ============================================================================================
+    SECCIÓN: Pinceles Personalizados Adaptables al Tema (ThemeDictionary)
+    
+    Este bloque es clave para que la apariencia del 'Thumb' (el control deslizante)
+    se invierta correctamente entre los modos claro y oscuro, garantizando su visibilidad
+    sobre cualquier color de la pista.
+    
+    Definimos dos pinceles personalizados:
+    - ColorPickerSliderThumbOuterBrush: Para el borde exterior del Thumb.
+    - ColorPickerSliderThumbInnerBrush: Para el núcleo interior del Thumb.
+    
+    Especificamos explícitamente qué color usarán para cada tema.
+    ============================================================================================
+    -->
+    <ResourceDictionary.ThemeDictionaries>
+
+        <!-- Definiciones para el TEMA CLARO -->
+        <ResourceDictionary x:Key="Light">
+            <!-- En modo claro, el borde es azul y el núcleo es blanco. -->
+            <SolidColorBrush x:Key="ColorPickerSliderThumbOuterBrush" Color="#0069ba" />
+            <SolidColorBrush x:Key="ColorPickerSliderThumbInnerBrush" Color="White" />
+        </ResourceDictionary>
+
+        <!-- Definiciones para el TEMA OSCURO -->
+        <ResourceDictionary x:Key="Dark">
+            <!-- En modo oscuro, se invierten: el borde es blanco y el núcleo es azul. -->
+            <SolidColorBrush x:Key="ColorPickerSliderThumbOuterBrush" Color="White" />
+            <SolidColorBrush x:Key="ColorPickerSliderThumbInnerBrush" Color="#0069ba" />
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+
+
+    <!--
+    ============================================================================================
+    SECCIÓN: Estilo Principal del ColorPickerSlider
+    
+    Este es el estilo por defecto que se aplicará a todas las instancias de 'ColorPickerSlider'.
+    Su única función es establecer la plantilla visual del control (ControlTemplate).
+    ============================================================================================
+    -->
+    <Style TargetType="local:ColorPickerSlider">
+        <Setter Property="Template">
+            <Setter.Value>
+                <!--
+                La ControlTemplate define la estructura y apariencia visual interna del control.
+                -->
+                <ControlTemplate TargetType="local:ColorPickerSlider">
+                    <Grid x:Name="RootGrid" MinHeight="32">
+
+                        <!--
+                        Pista de color principal: Su fondo (Background) es un degradado que se
+                        establece dinámicamente desde el code-behind (C#).
+                        -->
+                        <Border x:Name="ColorTrack"
+                                VerticalAlignment="Center" Height="10"
+                                CornerRadius="5"
+                                Background="{TemplateBinding Background}"/>
+
+                        <!--
+                        Pista para el canal Alfa: Contiene un fondo de tablero de ajedrez y un
+                        degradado de alfa superpuesto. Está colapsada por defecto y solo se
+                        hace visible cuando el 'Channel' es 'Alpha'.
+                        -->
+                        <Grid x:Name="AlphaTrackGrid"
+                              VerticalAlignment="Center" Height="10"
+                              CornerRadius="5" Visibility="Collapsed">
+                            <local:CheckerboardBackground CornerRadius="5" SquareSize="4"/>
+                            <Border x:Name="AlphaGradientBorder" CornerRadius="5"/>
+                        </Grid>
+
+                        <!--
+                        ========================================================================
+                        SECCIÓN: El Thumb (Control Deslizante)
+                        
+                        Elemento interactivo que el usuario arrastra. Su apariencia se define
+                        en su propia plantilla y utiliza los pinceles adaptables al tema.
+                        ========================================================================
+                        -->
+                        <Thumb x:Name="Thumb" VerticalAlignment="Center" HorizontalAlignment="Left" Height="20" Width="20">
+                            <Thumb.RenderTransform>
+                                <TranslateTransform />
+                            </Thumb.RenderTransform>
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="Thumb">
+                                    <Grid>
+                                        <!--
+                                        VisualStateManager maneja las animaciones del Thumb cuando el usuario
+                                        interactúa con él (pasa el ratón por encima o lo presiona).
+                                        -->
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="PointerOver">
+                                                    <!-- Al pasar el ratón, el núcleo interior se agranda. -->
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="InnerCore" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="1.2" Duration="0:0:0.1"/>
+                                                        <DoubleAnimation Storyboard.TargetName="InnerCore" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="1.2" Duration="0:0:0.1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Pressed">
+                                                    <!-- Al presionar, el núcleo interior se encoge. -->
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetName="InnerCore" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.8" Duration="0:0:0.1"/>
+                                                        <DoubleAnimation Storyboard.TargetName="InnerCore" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.8" Duration="0:0:0.1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+
+                                        <!-- Elipse Exterior (Borde) -->
+                                        <!-- Usa nuestro pincel personalizado 'ColorPickerSliderThumbOuterBrush' que cambia con el tema. -->
+                                        <Ellipse Fill="{ThemeResource ColorPickerSliderThumbOuterBrush}" 
+                                                 Width="20" 
+                                                 Height="20"/>
+
+                                        <!-- Elipse Interior (Núcleo) -->
+                                        <!-- Usa nuestro pincel personalizado 'ColorPickerSliderThumbInnerBrush' que cambia con el tema. -->
+                                        <Ellipse x:Name="InnerCore" 
+                                                 Fill="{ThemeResource ColorPickerSliderThumbInnerBrush}" 
+                                                 Width="12" 
+                                                 Height="12" 
+                                                 HorizontalAlignment="Center" 
+                                                 VerticalAlignment="Center">
+                                            <Ellipse.RenderTransform>
+                                                <!-- El centro de la animación se ajusta a la mitad del tamaño del núcleo (12/2=6). -->
+                                                <ScaleTransform CenterX="6" CenterY="6"/>
+                                            </Ellipse.RenderTransform>
+                                        </Ellipse>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

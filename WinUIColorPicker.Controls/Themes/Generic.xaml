@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Archivo: WinUIColorPicker.Controls/Themes/Generic.xaml -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinUIColorPicker.Controls">
+    
+<!--
+===============================================================================================
+Archivo: Themes/Generic.xaml
+Prop�sito: Diccionario de recursos principal para la biblioteca de controles WinUIColorPicker.
+           Este archivo es fundamental para los controles personalizados basados en plantillas,
+           ya que WinUI busca aqu� los estilos y plantillas por defecto.
+
+           Fusiona todos los diccionarios de recursos de los controles individuales
+           de la biblioteca para que est�n disponibles globalmente.
+===============================================================================================
+-->
+    <ResourceDictionary.MergedDictionaries>
+        
+        <!-- Carga los estilos y plantillas para cada control personalizado de la biblioteca -->
+        <ResourceDictionary Source="ms-appx:///WinUIColorPicker.Controls/WinUIColorPicker.xaml" />
+        <ResourceDictionary Source="ms-appx:///WinUIColorPicker.Controls/ColorPreviewer.xaml" />
+        <ResourceDictionary Source="ms-appx:///WinUIColorPicker.Controls/ColorPickerSlider.xaml" />
+        <ResourceDictionary Source="ms-appx:///WinUIColorPicker.Controls/ColorPickerButton.xaml" />
+        <ResourceDictionary Source="ms-appx:///WinUIColorPicker.Controls/ColorWheel.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
