@@ -1,4 +1,3 @@
-// Archivo: WinUIColorPicker.Controls/ColorPickerAccent.xaml.cs
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,15 +10,11 @@ namespace WinUIColorPicker.Controls
 {
     /// <summary>
     /// Un control interno que muestra una barra de acentos de color, con un color base
-    /// y varias tonalidades m�s claras (tintas) y oscuras (sombras).
+    /// y varias tonalidades más claras (tintas) y oscuras (sombras).
     /// </summary>
-    /// <remarks>
-    /// Su prop�sito es proporcionar acceso r�pido a una paleta monocrom�tica armoniosa
-    /// para acelerar el flujo de trabajo de dise�o de UI.
-    /// </remarks>
     internal sealed partial class ColorPickerAccent : UserControl
     {
-        #region Constantes de Dise�o
+        #region Constantes de Diseño
         private const double LightnessStep1 = 0.15;
         private const double LightnessStep2 = 0.30;
         private const double LightnessStep3 = 0.45;
@@ -30,7 +25,7 @@ namespace WinUIColorPicker.Controls
 
         #region Evento ColorSelected
         /// <summary>
-        /// Se dispara cuando el usuario hace clic en un bot�n de la barra, seleccionando un nuevo color.
+        /// Se dispara cuando el usuario hace clic en un botón de la barra, seleccionando un nuevo color.
         /// </summary>
         public event EventHandler<ColorSelectedEventArgs>? ColorSelected;
         #endregion
@@ -49,12 +44,13 @@ namespace WinUIColorPicker.Controls
                 nameof(AccentColor),
                 typeof(Color),
                 typeof(ColorPickerAccent),
-                new PropertyMetadata(Colors.DodgerBlue, OnAccentColorChanged));
+                new PropertyMetadata(Colors.DodgerBlue, OnAccentColorChanged)); // Mantenemos un valor por defecto robusto
 
         private static void OnAccentColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPickerAccent bar && e.NewValue is Color newColor)
             {
+                // Este callback ahora se activará tanto por el binding como por los cambios de tema.
                 bar.UpdateColorRamp(newColor);
             }
         }
@@ -63,19 +59,77 @@ namespace WinUIColorPicker.Controls
         public ColorPickerAccent()
         {
             this.InitializeComponent();
-            this.Loaded += OnValueStepperBarLoaded;
+
+            // ===================================================================================
+            // === INICIO DE LA CORRECCIÓN: Suscripción a eventos de ciclo de vida del control ===
+            // ===================================================================================
+            // Gestionamos el ciclo de vida del control para suscribirnos y desuscribirnos
+            // de forma segura a los eventos de cambio de tema.
+            this.Loaded += OnAccentBarLoaded;
+            this.Unloaded += OnAccentBarUnloaded;
+            // ===================================================================================
         }
 
-        private void OnValueStepperBarLoaded(object sender, RoutedEventArgs e)
+        // ===================================================================================
+        // === INICIO DE LA CORRECCIÓN: Nuevos métodos para gestionar el tema dinámico   ===
+        // ===================================================================================
+
+        /// <summary>
+        /// Se ejecuta cuando el control se carga en el árbol visual.
+        /// Prepara los botones y se suscribe a los cambios de tema.
+        /// </summary>
+        private void OnAccentBarLoaded(object sender, RoutedEventArgs e)
         {
             _buttons = new[] { ButtonNeg3, ButtonNeg2, ButtonNeg1, ButtonA, ButtonPos1, ButtonPos2, ButtonPos3 };
             foreach (var button in _buttons)
             {
                 button.Click += OnStepButtonClick;
             }
+
+            // Suscribirse al evento que se dispara cuando el tema de la aplicación
+            // (y por tanto, los recursos de ThemeResource) cambia.
+            // Esto hace que el control sea reactivo.
+            this.ActualThemeChanged += OnActualThemeChanged;
+
+            // Llama a UpdateColorRamp al inicio con el valor actual de AccentColor
+            // que viene del binding del control padre.
             UpdateColorRamp(this.AccentColor);
             SetActiveButton(ButtonA, isInitialSetup: true);
         }
+
+        /// <summary>
+        /// Se ejecuta cuando el control se descarga del árbol visual.
+        /// Es CRUCIAL darse de baja de los eventos para evitar fugas de memoria.
+        /// </summary>
+        private void OnAccentBarUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.ActualThemeChanged -= OnActualThemeChanged;
+
+            if (_buttons != null)
+            {
+                foreach (var button in _buttons)
+                {
+                    button.Click -= OnStepButtonClick;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Manejador del evento de cambio de tema.
+        /// Cuando el tema cambia, simplemente forzamos una re-evaluación de la rampa de color
+        /// usando el valor actual de la propiedad AccentColor.
+        /// </summary>
+        private void OnActualThemeChanged(FrameworkElement sender, object args)
+        {
+            // El AccentColor ya está enlazado a la propiedad Color del picker.
+            // Un cambio de tema no debería cambiarlo directamente, pero sí puede
+            // afectar a otros recursos. Forzar una actualización de la rampa
+            // asegura que todo se vuelva a calcular con los recursos más recientes.
+            UpdateColorRamp(this.AccentColor);
+        }
+        // ===================================================================================
+        // === FIN DE LA CORRECCIÓN                                                        ===
+        // ===================================================================================
 
         private void OnStepButtonClick(object sender, RoutedEventArgs e)
         {
@@ -118,21 +172,12 @@ namespace WinUIColorPicker.Controls
             _activeButton = buttonToActivate;
         }
 
-        /// <summary>
-        /// Regenera los colores de fondo para todos los botones y asigna un ToolTip informativo a cada uno.
-        /// </summary>
-        /// <param name="baseColor">El color central a partir del cual se generan las tonalidades.</param>
         private void UpdateColorRamp(Color baseColor)
         {
             if (_buttons == null) return;
 
-            // Se utiliza la clase centralizada ColorHelper para la conversi�n a HSL.
             var baseHsl = baseColor.ToHsl();
-
-            // Se prepara un array para almacenar los 7 colores de la rampa.
             var colors = new Color[7];
-
-            // Se definen nombres descriptivos para cada paso de la rampa, que se usar�n en el ToolTip.
             var names = new[]
             {
                 "Sombra Muy Oscura", "Sombra Oscura", "Sombra Ligera",
@@ -140,40 +185,21 @@ namespace WinUIColorPicker.Controls
                 "Tinta Ligera", "Tinta Clara", "Tinta Muy Clara"
             };
 
-            // Se generan y almacenan todos los colores en el array.
-            colors[3] = baseColor; // Color base en el centro.
-            // Sombras (menor luminosidad)
+            colors[3] = baseColor;
             colors[2] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L - LightnessStep1, 0, 1), A = baseHsl.A }.ToColor();
             colors[1] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L - LightnessStep2, 0, 1), A = baseHsl.A }.ToColor();
             colors[0] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L - LightnessStep3, 0, 1), A = baseHsl.A }.ToColor();
-            // Tintas (mayor luminosidad)
             colors[4] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L + LightnessStep1, 0, 1), A = baseHsl.A }.ToColor();
             colors[5] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L + LightnessStep2, 0, 1), A = baseHsl.A }.ToColor();
             colors[6] = new HslColor { H = baseHsl.H, S = baseHsl.S, L = Math.Clamp(baseHsl.L + LightnessStep3, 0, 1), A = baseHsl.A }.ToColor();
 
-            // Se recorre el array de botones para asignar el color de fondo y el ToolTip.
             for (int i = 0; i < _buttons.Length; i++)
             {
                 var button = _buttons[i];
                 var color = colors[i];
-
-                // Se establece el color de fondo del bot�n.
                 button.Background = new SolidColorBrush(color);
-
-                // ===================================================================================
-                // === IMPLEMENTACI�N DEL TOOLTIP INFORMATIVO ===
-                // ===================================================================================
-                // Se crea una nueva instancia de ToolTip para cada bot�n.
-                var toolTip = new ToolTip
-                {
-                    // El contenido del ToolTip se formatea con el nombre descriptivo y el valor
-                    // hexadecimal del color, obtenido a trav�s de nuestro m�todo de extensi�n ToHex().
-                    Content = $"{names[i]}\n{color.ToHex()}"
-                };
-
-                // Se asigna el ToolTip al bot�n usando el servicio ToolTipService.
+                var toolTip = new ToolTip { Content = $"{names[i]}\n{color.ToHex()}" };
                 ToolTipService.SetToolTip(button, toolTip);
-                // ===================================================================================
             }
         }
     }
