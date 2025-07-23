@@ -10,7 +10,7 @@
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <!-- Propiedades del Paquete NuGet -->
 	  <PackageId>WinUIColorPicker.Controls</PackageId>
-	  <Version>1.0.0</Version>
+	  <Version>1.0.1</Version>
 	  <!-- O empieza con 0.1.0-alpha si es una vista previa -->
 	  <Authors>Elias</Authors>
 	  <Description>Un conjunto de controles de selector de color modernos, personalizables y de alto rendimiento para WinUI 3, incluyendo una rueda de color, sliders y paletas.</Description>
